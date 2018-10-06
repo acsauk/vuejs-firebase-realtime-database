@@ -3,6 +3,7 @@
 <head>
   <title>Vue School Chat Room</title>
   <script src="https://unpkg.com/vue"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
@@ -35,6 +36,19 @@
 
 
 <script type="text/javascript">
+  // Initialize Firebase
+  const config = {
+    apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+    authDomain: "vue-chat-e7045.firebaseapp.com",
+    databaseURL: "https://vue-chat-e7045.firebaseio.com",
+    projectId: "vue-chat-e7045",
+    storageBucket: "vue-chat-e7045.appspot.com",
+    messagingSenderId: "457664115270"
+  };
+  firebase.initializeApp(config)
+
+  const database = firebase.database()
+
   new Vue({
     el: "#chat",
 
@@ -49,6 +63,10 @@
         this.messages.push({text: this.messageText, nickname: this.nickname})
         this.messageText = ''
       }
+    },
+
+    created () {
+      database.ref('messages').on('child_added', snapshot => this.messages.push(snapshot.val()))
     }
   })
 </script>
